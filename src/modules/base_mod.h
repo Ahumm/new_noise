@@ -9,6 +9,7 @@ namespace noise
         base_mod(){}
         ~base_mod(){}
         float get_val(int x, int y) { return -1.0f; }
+      private:
     };
 }
 
