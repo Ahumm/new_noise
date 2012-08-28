@@ -7,7 +7,7 @@ using namespace std;
 
 int main()
 {
-    cout << "test1 begin" << endl;
+    cout << "test_base begin" << endl;
     map_grid mg(128,128);
     base_mod* bm = new base_mod;
     
@@ -15,5 +15,5 @@ int main()
     
     mg.generate(0,0);
     
-    cout << "output_to_file : " << mg.output_to_file("./t1.bmp") << endl;
+    cout << "output_to_file : " << mg.output_to_file("./t_base.bmp") << endl;
 }

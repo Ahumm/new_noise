@@ -1,0 +1,22 @@
+#include "../src/map_grid.h"
+#include "../src/modules/perlin_mod.h"
+#include "../src/modules/abs_mod.h"
+#include <iostream>
+
+using namespace noise;
+using namespace std;
+
+int main()
+{
+    cout << "test_abs begin" << endl;
+    map_grid mg(128,128);
+    perlin_mod* pm = new perlin_mod(0.5f, 6, 0);
+    abs_mod* am = new abs_mod;
+    am->set_mod(0, pm);
+    
+    mg.set_module(am);
+    
+    mg.generate(0,0);
+    
+    cout << "output_to_file : " << mg.output_to_file("./t_abs.bmp") << endl;
+}

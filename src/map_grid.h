@@ -4,8 +4,9 @@
 #include "modules/base_mod.h"
 #include <cstring>
 
+
 namespace noise
-{
+{    
     class map_grid
     {
       public:
@@ -35,7 +36,7 @@ namespace noise
         size_t n_mg_last_width, n_mg_last_height;
         float* n_mg_data;
         base_mod* n_mg_module;
-    };
-}
+    };  // map_grid
+}   // namspace noise
 
-#endif
+#endif  // _MAP_GRID_H_
