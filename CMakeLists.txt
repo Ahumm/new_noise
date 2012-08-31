@@ -5,7 +5,7 @@ project(NEW_NOISE)
 INCLUDE(Custom_CMake_Utils.cmake)
 
 ##IF(WIN32)
-##	SET(CMAKE_CXX_FLAGS "-g std=c++0x")
+##	SET(CMAKE_CXX_FLAGS "-Wall -g std=c++0x")
 ##ENDIF(WIN32)
 
 
@@ -29,20 +29,20 @@ add_definitions("-g -std=c++0x")
 set(PROGRAM_NAMES "test_base" "test_perlin" "test_abs")
 ##set(final "src/final.cpp" "src/model/model.cpp" "src/emitter/emitter.cpp")
 set(test_base "tests/test_base.cpp" 
-          "src/map_grid.cpp"
+          #"src/map_grid.cpp"
     )
 set(test_perlin "tests/test_perlin.cpp" 
-          "src/map_grid.cpp"
+          #"src/map_grid.cpp"
     )
 set(test_abs "tests/test_abs.cpp"
-          "src/map_grid.cpp"
+          #"src/map_grid.cpp"
     )
     
 INSERT_INTO_MAP("test_base" "${test_base}")
 INSERT_INTO_MAP("test_perlin" "${test_perlin}")
 INSERT_INTO_MAP("test_abs" "${test_abs}")
 
-#SET(_VERBOSE TRUE)
+SET(_VERBOSE FALSE)
 
 foreach(CURRENT_PROGRAM ${PROGRAM_NAMES})
     GET_FROM_MAP("${CURRENT_PROGRAM}" CURRENT_SOURCES)

@@ -4,16 +4,16 @@
 |      base |       0 | base_mod   |    * |
 +-----------------------------------------+
 | generator |       0 | perlin_mod |    * |
-|           |         |  const_mod |      |
+|           |         |  const_mod |    * |
 +-----------------------------------------+
 |    single |       1 |    abs_mod |    * |
-|           |         |  shift_mod |      |
-|           |         |  scale_mod |      |
-|           |         | invert_mod |      |
+|           |         |  shift_mod |    * |
+|           |         |  scale_mod |    * |
+|           |         | invert_mod |    * |
 +-----------------------------------------+
-|    double |       2 |    avg_mod |      |
-|           |         |    min_mod |      |
-|           |         |    max_mod |      |
+|    double |       2 |    avg_mod |    * |
+|           |         |    min_mod |    * |
+|           |         |    max_mod |    * |
 |           |         |    add_mod |      |
 |           |         |   subt_mod |      |
 +-----------------------------------------+
