@@ -3,7 +3,6 @@
 #include <iostream>
 #include "base_mod.h"
 #include "../utils/perlin_utils.h"
-//#include "../utils/noise_utils.h"
 
 namespace noise
 {

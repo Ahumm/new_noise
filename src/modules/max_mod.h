@@ -17,7 +17,7 @@ namespace noise
             if(n_bm_sub_mods[0] && n_bm_sub_mods[1])
             {
                 float val1 = n_bm_sub_mods[0]->get_val(x,y);
-                float val2 = n_bm_sub_mods[1]->get_val(x,y)
+                float val2 = n_bm_sub_mods[1]->get_val(x,y);
                 return ((val1 > val2) ? val1 : val2);
             }
             if(n_bm_sub_mods[0]) return (n_bm_sub_mods[0]->get_val(x,y));
