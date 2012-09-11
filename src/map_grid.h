@@ -4,6 +4,8 @@
 #include "modules/base_mod.h"
 #include <cstring>
 
+#include <iostream>
+
 #include "utils/noise_utils.h"
 
 #define STB_IMAGE_WRITE_IMPLEMENTATION
@@ -19,12 +21,14 @@ namespace noise
             n_mg_width(0), n_mg_height(0),
             n_mg_x_zoom(6.0f), n_mg_y_zoom(6.0f),
             n_mg_last_width(0), n_mg_last_height(0),
-            n_mg_data(0), n_mg_module(0)
+            n_mg_data(0), n_mg_module(0),
+            n_mg_auto_scale(true)
         {}
         map_grid(const size_t& new_w, const size_t& new_h) : 
             n_mg_width(new_w), n_mg_height(new_h),
             n_mg_x_zoom(6.0f), n_mg_y_zoom(6.0f),
-            n_mg_data(0), n_mg_module(0)
+            n_mg_data(0), n_mg_module(0),
+            n_mg_auto_scale(true)
         {}
         ~map_grid()
         {
@@ -44,9 +48,12 @@ namespace noise
         void set_height(const size_t& new_h){ n_mg_height = new_h; }
         void set_x_zoom(const size_t& new_x_zoom){ n_mg_x_zoom = new_x_zoom; }
         void set_y_zoom(const size_t& new_y_zoom){ n_mg_y_zoom = new_y_zoom; }
+        void set_auto_scale(const bool& new_as){ n_mg_auto_scale = new_as; }
+        void toggle_auto_scale(){ n_mg_auto_scale = !n_mg_auto_scale; }
         
         size_t get_width(){ return n_mg_last_width; }
         size_t get_height(){ return n_mg_last_height; }
+        bool get_auto_scale(){ return n_mg_auto_scale; }
         
         float* get_data(){ return n_mg_data; }
         
@@ -85,16 +92,32 @@ namespace noise
             float x_current = (float)start_x;
             float y_current = (float)start_y;
             
+            float max_found_value = 0.0f;
+            
             for(size_t row = 0; row < n_mg_height; ++row)
             {
                 x_current = (float)start_x;
                 for(size_t col = 0; col < n_mg_width; ++col)
                 {
-                    n_mg_data[(row * n_mg_width) + col] = noise::clamp(n_mg_module->get_val(x_current, y_current), -1.0f, 1.0f);
+                    n_mg_data[(row * n_mg_width) + col] = n_mg_module->get_val(x_current, y_current);
+                    float t_val = (n_mg_data[(row * n_mg_width) + col] < 0.0f) ? n_mg_data[(row * n_mg_width) + col] * -1.0f : n_mg_data[(row * n_mg_width) + col];
+                    if(t_val > max_found_value) max_found_value = t_val;
                     x_current += x_change;
                 }
                 y_current += y_change;
             }
+            
+            // Shift everything to the correct range (I hope outliers don't break everything by making it shift too far)
+            if(max_found_value <= 1.0f) return 0;
+            
+            float scale_value = 1.0f / max_found_value;
+            std::cout << max_found_value << " ::: " << scale_value << std::endl;
+            for(size_t i = 0; i < n_mg_height * n_mg_width; i++)
+            {
+                if(n_mg_auto_scale) n_mg_data[i] *= scale_value;
+                else n_mg_data[i] = noise::clamp(n_mg_data[i], -1.0f, 1.0f);
+            }
+            
             return 0;
         }   // int generate(int,int)
         
@@ -123,11 +146,13 @@ namespace noise
         /* n_mg_x/y_zoom represents the level of zoom applied (i.e. the size of the frame we look at) */
         /* n_mg_data points to the data generated int he last call to generate(), ALL DATA IS IN THE RANGE (-1.0f, 1.0f)*/
         /* n_mg_module points to the module to be used in the next generate() call */
+        /* auto_scale determines if the output should auto-scale (true) or simply clamp (false) */
         size_t n_mg_width, n_mg_height;
         float n_mg_x_zoom, n_mg_y_zoom;
         size_t n_mg_last_width, n_mg_last_height;
         float* n_mg_data;
         base_mod* n_mg_module;
+        bool n_mg_auto_scale;
     };  // map_grid
 }   // namspace noise
 

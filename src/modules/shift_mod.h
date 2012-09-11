@@ -15,8 +15,8 @@ namespace noise
             base_mod(1), n_shm_factor(new_factor)
         {}
         
-        void set_factor(const float& new_factor) { m_shm_factor = new_factor; }
-        float get_factor() { return m_shm_factor; }
+        void set_factor(const float& new_factor) { n_shm_factor = new_factor; }
+        float get_factor() { return n_shm_factor; }
         
         float get_val(const float& x, const float& y)
         {

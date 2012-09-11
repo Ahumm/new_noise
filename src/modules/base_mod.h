@@ -47,14 +47,15 @@ namespace noise
                         delete n_bm_sub_mods[i];
                         n_bm_sub_mods[i] = 0;
                     }
-                    delete [] n_bm_sub_mods;
-                    n_bm_sub_mods = 0;
                 }
+                delete [] n_bm_sub_mods;
+                n_bm_sub_mods = 0;
             }
         }   // ~base_mod()
         
         void set_mod(const int& pos, base_mod* new_sub_mod)
         {
+            if(this == new_sub_mod) return; // Self assignment results in recursion loop
             if(pos < 0 || pos > n_bm_mod_count) return;
             if(n_bm_mod_count == 0) return;
             if(!n_bm_sub_mods) return;

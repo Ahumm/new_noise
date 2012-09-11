@@ -15,7 +15,7 @@ namespace noise
         
         float get_val(const float& x, const float& y)
         {
-            if(n_bm_sub_mods[0] && n_bm_sub_mods[1] && n_bm_sub_mods[2]) return c_interpolate(n_bm_sub_mods[0], n_bm_sub_mods[1], (n_bm_sub_mods[2] + 1.0f) / 2.0f);
+            if(n_bm_sub_mods[0] && n_bm_sub_mods[1] && n_bm_sub_mods[2]) return c_interpolate(n_bm_sub_mods[0]->get_val(x,y), n_bm_sub_mods[1]->get_val(x,y), (n_bm_sub_mods[2]->get_val(x,y) + 1.0f) / 2.0f);
             return 0.0f;
         }   // float get_val(float,float)
         

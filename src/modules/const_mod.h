@@ -11,12 +11,12 @@ namespace noise
     {
       public:
         const_mod() : base_mod(0), n_com_value(0.0f) {}
-        shift_mod(const float& new_vlaue) : 
-            base_mod(0), n_com_value(new_new)
+        const_mod(const float& new_value) : 
+            base_mod(0), n_com_value(new_value)
         {}
         
-        void set_value(const float& new_value) { m_com_value = new_value; }
-        float get_value() { return m_com_value; }
+        void set_value(const float& new_value) { n_com_value = new_value; }
+        float get_value() { return n_com_value; }
         
         float get_val(const float& x, const float& y)
         {

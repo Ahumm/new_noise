@@ -12,11 +12,11 @@ namespace noise
       public:
         scale_mod() : base_mod(1), n_scm_factor(1.0f) {}
         scale_mod(const float& new_factor) : 
-            base_mod(1), n_shm_factor(new_factor)
+            base_mod(1), n_scm_factor(new_factor)
         {}
         
-        void set_factor(const float& new_factor) { m_scm_factor = new_factor; }
-        float get_factor() { return m_scm_factor; }
+        void set_factor(const float& new_factor) { n_scm_factor = new_factor; }
+        float get_factor() { return n_scm_factor; }
         
         float get_val(const float& x, const float& y)
         {

@@ -42,7 +42,7 @@ namespace noise
         {
             float total = 0.0f;
             float p = n_pm_persistence;
-            float amplitude = 1.0f;
+            float amplitude = p;//1.0f;
             float frequency = 1.0f;
             float x_pass, y_pass, seed_pass;
             for(size_t i = 0; i < n_pm_octaves; ++i)
