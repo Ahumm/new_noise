@@ -4,9 +4,10 @@
 #include "base_mod.h"
 #include "../utils/perlin_utils.h"
 
-// PERSISTANCE - Higher => Pushes Towards the Extemes
-// OCTAVES     - Higher => More Blur
-// FREQUENCY   - Higher => More Random Terrain
+// PERSISTANCE - Higher => Pushes Towards the Extemes (Higher/Lower Terrain)
+// OCTAVES     - Higher => Higher Detail
+// FREQUENCY   - Lower => More Flowing Terrain
+//             - Higher => More Islandy
 
 namespace noise
 {
@@ -16,6 +17,7 @@ namespace noise
         perlin_mod() : base_mod(0)
         {
             n_pm_persistence = 1.0f;
+            n_pm_frequency = 1.0f;
             n_pm_octaves = 1;
             n_pm_seed = 0;
         }   // perlin_mod()
@@ -23,14 +25,28 @@ namespace noise
         perlin_mod(const float& new_persistence, const int& new_octaves, const int& new_seed) : base_mod(0)
         {
             n_pm_persistence = new_persistence;
+            n_pm_frequency = 2.0f;
             n_pm_octaves = (new_octaves > 0) ? new_octaves : 1;
             n_pm_seed = new_seed;
-        }   // perlin_mod(float,int)
+        }   // perlin_mod(float,int,int)
+        
+        perlin_mod(const float& new_persistence, const float& new_frequency, const int& new_octaves, const int& new_seed) : base_mod(0)
+        {
+            n_pm_persistence = new_persistence;
+            n_pm_frequency = new_frequency;
+            n_pm_octaves = (new_octaves > 0) ? new_octaves : 1;
+            n_pm_seed = new_seed;
+        }   // perlin_mod(float,float,int,int)
         
         void set_persistence(const float& new_persistence)
         {
             n_pm_persistence = new_persistence;
         }   // void set_persistence(float)
+        
+        void set_frequency(const float& new_frequency)
+        {
+            n_pm_frequency = new_frequency;
+        }   // void set_frequency(float)
         
         void set_octaves(const int& new_octaves)
         {
@@ -47,7 +63,7 @@ namespace noise
             float total = 0.0f;
             float p = n_pm_persistence;
             float amplitude = p;//1.0f;
-            float frequency = 1.0f;
+            float frequency = n_pm_frequency;
             float x_pass, y_pass, seed_pass;
             for(size_t i = 0; i < n_pm_octaves; ++i)
             {
@@ -63,6 +79,7 @@ namespace noise
         
       private:
         float n_pm_persistence;
+        float n_pm_frequency;
         int n_pm_octaves;
         int n_pm_seed;
     };  // perlin_mod
