@@ -4,6 +4,10 @@
 #include "base_mod.h"
 #include "../utils/perlin_utils.h"
 
+// PERSISTANCE - Higher => Pushes Towards the Extemes
+// OCTAVES     - Higher => More Blur
+// FREQUENCY   - Higher => More Random Terrain
+
 namespace noise
 {
     class perlin_mod : public base_mod

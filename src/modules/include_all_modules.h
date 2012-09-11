@@ -14,5 +14,9 @@
 #include "scale_mod.h"
 #include "shift_mod.h"
 #include "subt_mod.h"
+#include "floor_a_mod.h"
+#include "floor_b_mod.h"
+#include "ceiling_a_mod.h"
+#include "ceiling_b_mod.h"
 
 #endif

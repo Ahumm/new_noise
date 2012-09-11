@@ -6,6 +6,8 @@
 #include <time.h>
 
 #define CLAMP_VALUES 0
+#define MAP_SIZE 1024
+#define ZOOM_LEVEL 8.0f
 
 using namespace noise;
 using namespace std;
@@ -26,6 +28,13 @@ void test_subt(    const size_t& test_num                  );
 
 void test_interp(  const size_t& test_num);
 
+void test_floor_a(   const size_t& test_num);
+void test_floor_b(   const size_t& test_num);
+void test_ceiling_a( const size_t& test_num);
+void test_ceiling_b(   const size_t& test_num);
+
+static map_grid mg(MAP_SIZE,MAP_SIZE);
+
 string i_to_s(const size_t& i)
 {
     string s;
@@ -45,6 +54,12 @@ string f_to_s(const float& i)
 
 int main()
 {
+#if !CLAMP_VALUES
+    mg.set_auto_scale(false);
+#endif
+    mg.set_x_zoom(ZOOM_LEVEL);
+    mg.set_y_zoom(ZOOM_LEVEL);
+
     cout << "Begin tests" << endl;
     int start_time = clock();
     
@@ -56,18 +71,23 @@ int main()
     test_perlin(  5, 0  );
     test_perlin(  6, 1  );
 
-    test_abs(     7);
-    test_shift(   8);
-    test_scale(   9);
-    test_invert( 10);
+    test_abs(        7);
+    test_shift(      8);
+    test_scale(      9);
+    test_invert(    10);
 
-    test_avg(    11);
-    test_min(    12);
-    test_max(    13);
-    test_add(    14);
-    test_subt(   15);
+    test_avg(       11);
+    test_min(       12);
+    test_max(       13);
+    test_add(       14);
+    test_subt(      15);
 
-    test_interp(  16);
+    test_interp(    16);
+    
+    test_floor_a(   17);
+    test_floor_b(   18);
+    test_ceiling_a( 19);
+    test_ceiling_b( 20);
     
     int end_time = clock();
     cout << "Tests completed : " << (end_time - start_time) / CLOCKS_PER_SEC << " seconds" << endl << endl;
@@ -76,14 +96,9 @@ int main()
 void test_constant(const size_t& test_num, const float& val)
 {
     cout << "\tBegin test_constant " << val << endl;
-    map_grid mg(128,128);
     const_mod* bm = new const_mod(val);
     
     mg.set_module(bm);
-    
-#if CLAMP_VALUES
-    mg.set_auto_scale(false);
-#endif
     
     int start_time = clock();
     mg.generate(0,0);
@@ -97,14 +112,9 @@ void test_constant(const size_t& test_num, const float& val)
 void test_perlin(  const size_t& test_num,  const int& seed)
 {
     cout << "\tBegin test_perlin" << endl;
-    map_grid mg(128,128);
     perlin_mod* p_m = new perlin_mod(0.5f, 6, seed);
     
     mg.set_module(p_m);
-    
-#if CLAMP_VALUES
-    mg.set_auto_scale(false);
-#endif
 
     int start_time = clock();
     mg.generate(0,0);
@@ -118,16 +128,11 @@ void test_perlin(  const size_t& test_num,  const int& seed)
 void test_abs(     const size_t& test_num)
 {
     cout << "\tBegin test_abs" << endl;
-    map_grid mg(128,128);
     perlin_mod* p_m = new perlin_mod(0.5f, 6, 0);
     abs_mod* abs_m = new abs_mod;
     abs_m->set_mod(0, p_m);
     
     mg.set_module(abs_m);
-    
-#if CLAMP_VALUES
-    mg.set_auto_scale(false);
-#endif
     
     int start_time = clock();
     mg.generate(0,0);
@@ -141,7 +146,6 @@ void test_abs(     const size_t& test_num)
 void test_shift(   const size_t& test_num)
 {
     cout << "\tBegin test_shift" << endl;
-    map_grid mg(128,128);
     perlin_mod* p_m = new perlin_mod(0.5f, 6, 0);
     abs_mod* abs_m = new abs_mod;
     shift_mod* sh_m = new shift_mod;
@@ -152,10 +156,6 @@ void test_shift(   const size_t& test_num)
     sh_m->set_factor(-0.5f);
     
     mg.set_module(sh_m);
-    
-#if CLAMP_VALUES
-    mg.set_auto_scale(false);
-#endif
     
     int start_time = clock();
     mg.generate(0,0);
@@ -169,7 +169,6 @@ void test_shift(   const size_t& test_num)
 void test_scale(   const size_t& test_num)
 {
     cout << "\tBegin test_scale" << endl;
-    map_grid mg(128,128);
     perlin_mod* p_m = new perlin_mod(0.5f, 6, 0);
     abs_mod* abs_m = new abs_mod;
     shift_mod* sh_m = new shift_mod;
@@ -185,10 +184,6 @@ void test_scale(   const size_t& test_num)
     
     mg.set_module(sc_m);
 
-#if CLAMP_VALUES
-    mg.set_auto_scale(false);
-#endif
-    
     int start_time = clock();
     mg.generate(0,0);
     int end_time = clock();
@@ -201,7 +196,6 @@ void test_scale(   const size_t& test_num)
 void test_invert(  const size_t& test_num)
 {
     cout << "\tBegin test_invert" << endl;
-    map_grid mg(128,128);
     perlin_mod* p_m = new perlin_mod(0.5f, 6, 0);
     abs_mod* abs_m = new abs_mod;
     shift_mod* sh_m = new shift_mod;
@@ -220,10 +214,6 @@ void test_invert(  const size_t& test_num)
     
     mg.set_module(i_m);
 
-#if CLAMP_VALUES
-    mg.set_auto_scale(false);
-#endif
-    
     int start_time = clock();
     mg.generate(0,0);
     int end_time = clock();
@@ -237,7 +227,6 @@ void test_invert(  const size_t& test_num)
 void test_avg(     const size_t& test_num)
 {
     cout << "\tBegin test_avg" << endl;
-    map_grid mg(128,128);
     perlin_mod* p_m0 = new perlin_mod(0.5f, 6, 0);
     perlin_mod* p_m1 = new perlin_mod(0.5f, 6, 1);
     avg_mod* avg_m = new avg_mod;
@@ -247,10 +236,6 @@ void test_avg(     const size_t& test_num)
     
     mg.set_module(avg_m);
 
-#if CLAMP_VALUES
-    mg.set_auto_scale(false);
-#endif
-    
     int start_time = clock();
     mg.generate(0,0);
     int end_time = clock();
@@ -263,7 +248,6 @@ void test_avg(     const size_t& test_num)
 void test_min(     const size_t& test_num)
 {
     cout << "\tBegin test_min" << endl;
-    map_grid mg(128,128);
     perlin_mod* p_m0 = new perlin_mod(0.5f, 6, 0);
     perlin_mod* p_m1 = new perlin_mod(0.5f, 6, 1);
     min_mod* min_m = new min_mod;
@@ -273,10 +257,6 @@ void test_min(     const size_t& test_num)
     
     mg.set_module(min_m);
 
-#if CLAMP_VALUES
-    mg.set_auto_scale(false);
-#endif
-    
     int start_time = clock();
     mg.generate(0,0);
     int end_time = clock();
@@ -289,7 +269,6 @@ void test_min(     const size_t& test_num)
 void test_max(     const size_t& test_num)
 {
     cout << "\tBegin test_max" << endl;
-    map_grid mg(128,128);
     perlin_mod* p_m0 = new perlin_mod(0.5f, 6, 0);
     perlin_mod* p_m1 = new perlin_mod(0.5f, 6, 1);
     max_mod* max_m = new max_mod;
@@ -299,10 +278,6 @@ void test_max(     const size_t& test_num)
     
     mg.set_module(max_m);
 
-#if CLAMP_VALUES
-    mg.set_auto_scale(false);
-#endif
-    
     int start_time = clock();
     mg.generate(0,0);
     int end_time = clock();
@@ -315,7 +290,6 @@ void test_max(     const size_t& test_num)
 void test_add(     const size_t& test_num)
 {
     cout << "\tBegin test_add" << endl;
-    map_grid mg(128,128);
     perlin_mod* p_m0 = new perlin_mod(0.5f, 6, 0);
     perlin_mod* p_m1 = new perlin_mod(0.5f, 6, 1);
     add_mod* add_m = new add_mod;
@@ -324,10 +298,6 @@ void test_add(     const size_t& test_num)
     add_m->set_mod(1, p_m1);
     
     mg.set_module(add_m);
-mg.set_auto_scale(false);
-#if CLAMP_VALUES
-    mg.set_auto_scale(false);
-#endif
     
     int start_time = clock();
     mg.generate(0,0);
@@ -341,7 +311,6 @@ mg.set_auto_scale(false);
 void test_subt(    const size_t& test_num)
 {
     cout << "\tBegin test_subt" << endl;
-    map_grid mg(128,128);
     perlin_mod* p_m0 = new perlin_mod(0.5f, 6, 0);
     perlin_mod* p_m1 = new perlin_mod(0.5f, 6, 1);
     subt_mod* subt_m = new subt_mod;
@@ -350,10 +319,6 @@ void test_subt(    const size_t& test_num)
     subt_m->set_mod(1, p_m1);
     
     mg.set_module(subt_m);
-mg.set_auto_scale(false);
-#if CLAMP_VALUES
-    mg.set_auto_scale(false);
-#endif
     
     int start_time = clock();
     mg.generate(0,0);
@@ -364,4 +329,101 @@ mg.set_auto_scale(false);
     cout << "\ttest_subt completed : " << (end_time - start_time) / CLOCKS_PER_SEC << " seconds" << endl << endl;
 }
 
-void test_interp(  const size_t& test_num){}
+void test_interp(  const size_t& test_num)
+{
+    cout << "\tBegin test_interp" << endl;
+    perlin_mod* p_m0 = new perlin_mod(0.5f, 6, 0);
+    perlin_mod* p_m1 = new perlin_mod(0.5f, 6, 1);
+    perlin_mod* p_m2 = new perlin_mod(0.5f, 6, 2);
+    interp_mod* interp_m = new interp_mod;
+    
+    interp_m->set_mod(0, p_m0);
+    interp_m->set_mod(1, p_m1);
+    interp_m->set_mod(2, p_m2);
+    
+    mg.set_module(interp_m);
+    
+    int start_time = clock();
+    mg.generate(0,0);
+    int end_time = clock();
+    
+    string of_name = "./results/t_" + i_to_s(test_num) + "_interp.bmp";
+    cout << "\t\toutput_to_file : " << mg.output_to_file(of_name.c_str()) << endl;
+    cout << "\ttest_interp completed : " << (end_time - start_time) / CLOCKS_PER_SEC << " seconds" << endl << endl;
+}
+
+void test_floor_a(   const size_t& test_num)
+{
+    cout << "\tBegin test_floor_a" << endl;
+    perlin_mod* p_m0 = new perlin_mod(0.5f, 6, 0);
+    floor_a_mod* floor_a_m = new floor_a_mod;
+    
+    floor_a_m->set_mod(0, p_m0);
+    
+    mg.set_module(floor_a_m);
+    
+    int start_time = clock();
+    mg.generate(0,0);
+    int end_time = clock();
+    
+    string of_name = "./results/t_" + i_to_s(test_num) + "_floor_a.bmp";
+    cout << "\t\toutput_to_file : " << mg.output_to_file(of_name.c_str()) << endl;
+    cout << "\ttest_floor_a completed : " << (end_time - start_time) / CLOCKS_PER_SEC << " seconds" << endl << endl;
+}
+
+void test_floor_b(   const size_t& test_num)
+{
+    cout << "\tBegin test_floor_b" << endl;
+    perlin_mod* p_m0 = new perlin_mod(0.5f, 6, 0);
+    floor_b_mod* floor_b_m = new floor_b_mod;
+    
+    floor_b_m->set_mod(0, p_m0);
+    
+    mg.set_module(floor_b_m);
+    
+    int start_time = clock();
+    mg.generate(0,0);
+    int end_time = clock();
+    
+    string of_name = "./results/t_" + i_to_s(test_num) + "_floor_b.bmp";
+    cout << "\t\toutput_to_file : " << mg.output_to_file(of_name.c_str()) << endl;
+    cout << "\ttest_floor_b completed : " << (end_time - start_time) / CLOCKS_PER_SEC << " seconds" << endl << endl;
+}
+
+void test_ceiling_a( const size_t& test_num)
+{
+    cout << "\tBegin test_ceiling_a" << endl;
+    perlin_mod* p_m0 = new perlin_mod(0.5f, 6, 0);
+    ceiling_a_mod* ceiling_a_m = new ceiling_a_mod;
+    
+    ceiling_a_m->set_mod(0, p_m0);
+    
+    mg.set_module(ceiling_a_m);
+    
+    int start_time = clock();
+    mg.generate(0,0);
+    int end_time = clock();
+    
+    string of_name = "./results/t_" + i_to_s(test_num) + "_ceiling_a.bmp";
+    cout << "\t\toutput_to_file : " << mg.output_to_file(of_name.c_str()) << endl;
+    cout << "\ttest_ceiling_a completed : " << (end_time - start_time) / CLOCKS_PER_SEC << " seconds" << endl << endl;
+}
+
+void test_ceiling_b(   const size_t& test_num)
+{
+    cout << "\tBegin test_ceiling_b" << endl;
+    perlin_mod* p_m0 = new perlin_mod(0.5f, 6, 0);
+    ceiling_b_mod* ceiling_b_m = new ceiling_b_mod;
+    
+    ceiling_b_m->set_mod(0, p_m0);
+    
+    mg.set_module(ceiling_b_m);
+    
+    int start_time = clock();
+    mg.generate(0,0);
+    int end_time = clock();
+    
+    string of_name = "./results/t_" + i_to_s(test_num) + "_ceiling_b.bmp";
+    cout << "\t\toutput_to_file : " << mg.output_to_file(of_name.c_str()) << endl;
+    cout << "\ttest_ceiling_b completed : " << (end_time - start_time) / CLOCKS_PER_SEC << " seconds" << endl << endl;
+}
