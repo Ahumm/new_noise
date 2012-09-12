@@ -16,8 +16,9 @@ set(CMAKE_INCLUDE_PATH "${NEW_NOISE_SOURCE_DIR}/include")
 include_directories("${NEW_NOISE_SOURCE_DIR}/include")
 
 # These next two are pretty much the same
-#set(CMAKE_CXX_FLAGS "-g -std=c++0x")
-add_definitions("-g -std=c++0x")
+set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -g -std=c++0x")
+set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -g -std=c++0x")
+##add_definitions("-g -std=c++0x")
 ##add_definitions("-g -std=c++0x -DGLEW_STATIC -static")
 #add_subdirectory(src)
 
