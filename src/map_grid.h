@@ -183,7 +183,6 @@ namespace noise
         float* n_mg_data;
         base_mod* n_mg_module;
         bool n_mg_auto_scale;
-        bool n_mg_changes_since_last_gen;
     };  // map_grid
 }   // namspace noise
 
